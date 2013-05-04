@@ -1,1 +1,4 @@
-# This is my README
+instamap
+========
+
+Playing around with the Instagram Developer API
