@@ -2,10 +2,8 @@
  * GET home page.
  */
 
-var request = require('request');
-
-//CONSTANTS
-var app_items = {}; // contains a list of unique IG items
+var request = require('request'),
+	app_items = {}; // contains a list of unique IG items
 
 /**
  * This method is invoked when index.html is loaded, serve a static file, then start a subscription with IG
@@ -16,10 +14,13 @@ exports.index = function(req, res) {
 		title: 'Express'
 	});
 
-	// First delete an existing subscriptions...
+	// First delete any existing subscriptions...
 	request.del(
 		'https://api.instagram.com/v1/subscriptions?client_secret=3be6dc18522f4214a2e345476d0de3e7&object=all&client_id=172d792897af4c8c8ec4d7ca2d6f4f8f',
 
+	/**
+	 * This is the handler for the DEL request, here we will create a new subscription
+	 */
 	function(error, response, body) {
 		// POST to IG asking for subscription
 		request.post(
@@ -42,14 +43,14 @@ exports.index = function(req, res) {
 
 /**
  * This method is invoked when IG notifies that a new item has been added to our subscription
- * @param  {object} items An object containing all items that have been posted since our subscription started
+ * @param  {object} items Object containing all items that have been posted since our subscription started
  */
 exports.updated = function(items) {
 	io = require('socket.io').listen(server);
 
 	io.on('connection', function(socket) {
-		console.log('messsage has been emitted...!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
-		socket.broadcast.emit('greeting', 'hello browser :)');
+		console.log('messsage has been emitted...................');
+		socket.broadcast.emit('greeting', 'hello browser');
 
 		var length = items.data.length,
 			media = null;
@@ -60,15 +61,10 @@ exports.updated = function(items) {
 				// Add item to app_items
 				app_items[media.id] = media;
 
-				/*			
-				 * Here I want to send new item to the client... Not sure how
+				/* 
+				 * :::TODO:::
+				 * Here I want to send new item ('media') to the client... Not sure how?
 				 */
-
-
-
-				/*			io.connect('http://localhost:8081').emit('newItem', {
-					item: media
-				});*/
 
 			} else {
 				console.log('already exists');
