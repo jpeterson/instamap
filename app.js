@@ -27,12 +27,43 @@ if ('development' == app.get('env')) {
 	app.use(express.errorHandler());
 }
 
+
 app.get('/', routes.index);
 app.get('/users', user.list);
 
 app.get('/callback', callback.get);
 app.post('/callback', callback.post);
 
-http.createServer(app).listen(app.get('port'), function() {
+server = http.createServer(app).listen(app.get('port'), function() {
 	console.log('Express server listening on port ' + app.get('port'));
 });
+
+io = require('socket.io').listen(server);
+
+io.sockets.on('connection', function(socket) {
+	var photos = setInterval(function() {
+		socket.volatile.emit('instagram photo', {
+			media: 'photo',
+			tags: ['pic', 'admo', 'ramen']
+		});
+
+		// sendPhotos(function(tweet) {
+		// 	socket.volatile.emit('bieber tweet', tweet);
+		// });
+	}, 100);
+
+	socket.on('disconnect', function() {
+		clearInterval(tweets);
+	});
+});
+
+sendPhotos = function(photos) {
+	console.log(photos);
+	/*
+	io = require('socket.io').listen(server);
+
+	io.on('connection', function(socket) {
+		socket.broadcast.emit('greeting', 'hello browser :)');
+	});
+*/
+};
