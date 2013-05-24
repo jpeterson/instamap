@@ -3,7 +3,8 @@
  */
 
 var request = require('request'),
-	index = require('../routes/index');
+	index = require('../routes/index'),
+	app = require('../app');
 
 var myUrl = '';
 
@@ -32,7 +33,7 @@ exports.post = function(req, res) {
 
 	function(error, response, body) {
 		if (body) {
-			index.updated(JSON.parse(body));
+			app.updated(JSON.parse(body));
 		}
 	});
 
